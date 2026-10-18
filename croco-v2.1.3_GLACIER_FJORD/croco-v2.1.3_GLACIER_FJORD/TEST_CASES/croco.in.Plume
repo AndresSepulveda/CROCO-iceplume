@@ -1,0 +1,55 @@
+!
+! Keyword-based startup file: PLUME test case
+! Explicitly resolved subglacial discharge plume (no ICEPLUME), NBQ.
+!   300x3x60 points, dx=dy=5 m, uniform dz=3.3 m, h=200 m, f=1e-4,
+!   glacier (land) at i<=1, closed basin (1.5 km), halocline at 50 m.
+!   Discharge 0.4545 m2/s per unit width (GLACIER: 100 m3/s over a
+!   220-m sheet) = 2.2727 m3/s through each of the 3 cells across,
+!   released in the two bottom levels of the ice face; T=0, S=0, dye=1.
+!   NBQ: reduced sound speed 50 m/s (> sqrt(g h) = 44 m/s);
+!   dt = 0.25 s (plume velocities reach ~2 m/s: w dt/dz < 0.2);
+!   dtfast = dt/NDTFAST = 0.042 s, c dtfast sqrt(1/dx2+1/dy2) = 0.59.
+!   Default: 1 hour (NTIMES=14400), history every minute, restart
+!   every 10 minutes.
+!
+title:
+	PLUME: resolved subglacial discharge plume (NBQ, no ICEPLUME)
+time_stepping: NTIMES   dt[sec]  NDTFAST  NINFO
+               14400     0.25       6      240
+time_stepping_nbq: NDTNBQ    CSOUND_NBQ    VISC2_NBQ
+                     1          50.          1.
+S-coord: THETA_S,   THETA_B,    Hc (m)
+           0.0d0      0.0d0       1.d16
+initial: NRREC  filename
+          0
+                          plume_rst.nc
+restart:          NRST, NRPFRST / filename
+                  2400    -1
+                          plume_rst.nc
+history: LDEFHIS, NWRT, NRPFHIS / filename
+            T      240      0
+                          plume_his.nc
+primary_history_fields: zeta UBAR VBAR  U  V   wrtT(1:NT)
+                          T    T   T   T  T    30*T
+auxiliary_history_fields:   rho Omega W  Akv  Akt  Aks Visc3d Diff3d  HBL HBBL Bostr Bustr Bvstr Wstr Ustr Vstr Shfl rsw rlw lat sen Hm HEL BIOL
+                             T   F    T   T    T    F   F      F       F   F    F    F     F      20*F
+gls_history_fields:   TKE  GLS  Lscale
+                       T     F    F
+rho0:
+      1025.
+bottom_drag:     RDRG(m/s),      RDRG2, Zob [m],  Cdb_min, Cdb_max
+                 3.0E-04         0.     0.        0.       0.
+lateral_visc:   VISC2,    VISC4    [m^2/sec for all]
+                0.01      0.
+gamma2:
+                 1.
+!
+! Point sources at the glacier face (u-face Isrc=2 between the ice
+! cell i=1 and the wet cell i=2), one per cell across (j=1..3);
+! vertical shape: two bottom levels (ana_psource). Tracers: T, S, dye.
+!
+psource:   Nsrc  Isrc  Jsrc  Dsrc  Qbar [m3/s]    Lsrc        Tsrc
+           3
+                 2      1    0      2.2727       T T T       0. 0. 1.
+                 2      2    0      2.2727       T T T       0. 0. 1.
+                 2      3    0      2.2727       T T T       0. 0. 1.

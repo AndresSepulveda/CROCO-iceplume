@@ -1,0 +1,56 @@
+!
+! FJORD test case (river at the head, or no head source). Options for
+! sill, tide, exchange flow, river and wind are set in cppdefs.h.
+! With FJORD_GLACIER use croco.in.Fjord_glacier instead.
+!
+title:
+        FJORD: idealized fjord (sill, tide, river, wind options)
+time_stepping: NTIMES   dt[sec]  NDTFAST  NINFO
+               86400     30       20       60
+S-coord: THETA_S,   THETA_B,    Hc (m)
+           5.0d0     1.0d0      10.0d0
+initial: NRREC  filename
+          0
+                          fjord_ini.nc
+restart:          NRST, NRPFRST / filename
+                   28800    -1
+                          fjord_rst.nc
+history: LDEFHIS, NWRT, NRPFHIS / filename
+            T     120     0
+                          fjord_his.nc
+averages: NTSAVG, NAVG, NRPFAVG / filename
+            1     3000     0
+                          fjord_avg.nc
+primary_history_fields: zeta UBAR VBAR  U  V   wrtT(1:NT)
+                          T    T   T   T  T    30*T
+auxiliary_history_fields:   rho Omega  W  Akv  Akt  Aks Visc3d Diff3d  HBL HBBL Bostr Wstr Ustr Vstr Shfl Swfl rsw rlw lat sen  HEL
+                             T   F     T   T    T    T    F     F       F   F    T     F    F    F    F    F   10*F
+gls_history_fields:   TKE  GLS  Lscale
+                       T     F    F
+primary_averages: zeta UBAR VBAR  U  V   wrtT(1:NT)
+                   T    T    T    T  T   30*T
+auxiliary_averages:   rho Omega  W  Akv  Akt  Aks Visc3d Diff3d  HBL HBBL Bostr Wstr Ustr Vstr Shfl Swfl rsw rlw lat sen  HEL
+                       T   F     T   T    T    T    F     F       F   F    T     F    F    F    F    F   10*F
+gls_averages:   TKE  GLS  Lscale
+                 T     F    F
+rho0:
+      1025.d0
+lateral_visc:   VISC2,    VISC4    [m^2/sec for all]
+                 1.0       0.
+tracer_diff2: TNU2(1:NT)           [m^2/sec for all]
+               30*0.d0
+bottom_drag:     RDRG [m/s],  RDRG2,  Zob [m],  Cdb_min, Cdb_max
+                 0.0d-03      0.0d-3  1.0d-3     1.d-4    1.d-1
+gamma2:
+                 1.d0
+sponge:          X_SPONGE [m],    V_SPONGE [m^2/sec]
+                    2000.               20.
+nudg_cof:    TauT_in, TauT_out, TauM_in, TauM_out  [days for all]
+                0.5      10.      0.5      10.
+!
+! River at the head (FJORD_RIVER). Without FJORD_RIVER this
+! keyword is not read (CROCO only prints "Unrecognized keyword").
+!
+psource:   Nsrc  Isrc  Jsrc  Dsrc  Qbar [m3/s]    Lsrc        Tsrc
+            1
+                  240   8     0   -200.  T T T T  8. 0. 1. 0.
