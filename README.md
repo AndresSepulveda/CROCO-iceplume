@@ -1,6 +1,6 @@
 **<font size=6>CROCO-ICEPLUME</font>**
 
-Based on the work of Chuning Wang to couple ROMS and ICEPLUME. Adapting for CROCOv1.3.1
+Based on the work of Chuning Wang to couple ROMS and ICEPLUME. Adapting for CROCOv2.1.3
 
 [![ver info](https://img.shields.io/badge/ROMS%20ver3.9-ICEPLUME%20ver1.1.1-brightgreen.svg)](https://github.com/ChuningWang/roms-iceplume)
 
